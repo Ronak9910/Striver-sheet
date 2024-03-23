@@ -1,0 +1,80 @@
+Question:- 
+
+Link:- 
+Code:-
+Approach 1 Brute Force:-
+#include <bits/stdc++.h>
+using namespace std;
+int nth_fibonacciNumber(int n)
+{
+    if (n == 1 || n == 2)
+        return 1;
+    return nth_fibonacciNumber(n - 1) + nth_fibonacciNumber(n - 2);
+}
+int main()
+{
+    int n;
+    cin >> n;
+    cout << nth_fibonacciNumber(n) << endl;
+}
+T.C = O(2^N)
+S.C = O(N)
+
+Approach 2 Memoization:-
+#include <bits/stdc++.h>
+using namespace std;
+int nth_fibonacciNumber(int n, vector<int> &dp)
+{
+    if (n == 1 || n == 2)
+        return 1;
+    if(dp[n] != -1)
+        return dp[n];
+    return dp[n] = nth_fibonacciNumber(n - 1, dp) + nth_fibonacciNumber(n - 2, dp);
+}
+int main()
+{
+    int n;
+    cin >> n;
+    vector<int> dp(n + 1, -1);
+    cout << nth_fibonacciNumber(n, dp) << endl;
+}
+T.C = O(N)
+S.C = O(N)
+
+Approach 3 Tabulation:-
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int n;
+    cin >> n;
+    vector<int> dp(n + 1, -1);
+    dp[1] = 1;
+    if (n > 1)
+        dp[2] = 1;
+    for (int i = 3; i <= n; i++)
+    {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    cout << dp[n] << endl;
+}
+
+Approach 4 Space Optimization:-
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int n;
+    cin >> n;
+    int prev1 = 1;
+    int prev2 = 1;
+    for (int i = 3; i <= n; i++)
+    {
+        int temp = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = temp;
+    }
+    cout << prev1 << endl;
+}
+T.C = O(N)
+S.C = O(1)
