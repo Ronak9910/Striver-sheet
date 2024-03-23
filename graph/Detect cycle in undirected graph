@@ -1,0 +1,88 @@
+Question:- Given an undirected graph of 'V' vertices and 'E' edges. Return true if the graph contains a cycle or not, else return false.
+Note: There are no self-loops(an edge connecting the vertex to itself) in the given graph.
+
+link:-https://www.codingninjas.com/studio/problems/detect-cycle-in-an-undirected-graph-_758967?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+Code:-
+Approach 1 using DFS:-
+class Graph
+{
+public:
+    bool dfs(vector<int> adj[], int node, int parent, vector<int> &visited)
+    {
+        // mark it visited if same node comes again in traversal then it means cycle is present
+        visited[node] = 1;
+        for (auto i : adj[node])
+        {
+            if (i == parent)
+                continue;
+            if (visited[i] == 1) // cycle detected
+            {
+                return true;
+            }
+            else if (visited[i] == 0)
+            {
+                if (dfs(adj, i, node, visited)) // if cycle already detected then no need to traverse more
+                    return true;
+            }
+        }
+        return false;
+    }
+    bool detectCycle(int V, vector<int> adj[])
+    {
+        vector<int> visited(V, 0);  // O(V)
+        for (int i = 0; i < V; i++) // O(V + 2*E)
+        {
+            if (visited[i] == 0)
+            {
+                if (dfs(adj, i, -1, visited))
+                    return true;
+            }
+        }
+        return false;
+    }
+};
+T.C = O(V + E)
+S.C = O(V)
+
+Approach 2 using BFS:- 
+class Graph
+{
+public:
+    bool bfs(vector<int> adj[], int src, vector<int> &visited)
+    {
+        queue<pair<int, int>> q; //{node, parent}
+        q.push({src, -1});
+        visited[src] = 1;
+        while (!q.empty())
+        {
+            int node = q.front().first;
+            int parent = q.front().second;
+            q.pop();
+            for (auto it : adj[node])
+            {
+                if (it == parent)
+                    continue;
+                if (visited[it])
+                    return true;
+                q.push({it, node});
+                visited[it] = 1;
+            }
+        }
+        return false;
+    }
+    bool detectCycle(int V, vector<int> adj[])
+    {
+        vector<int> visited(V, 0);  // O(V)
+        for (int i = 0; i < V; i++) // O(V + 2*E)
+        {
+            if (visited[i] == 0)
+            {
+                if (bfs(adj, i, visited))
+                    return true;
+            }
+        }
+        return false;
+    }
+};
+T.C = O(V + E)
+S.C = O(V)
