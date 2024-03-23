@@ -1,0 +1,63 @@
+Question:- You have been given a grid containing some oranges. Each cell of this grid has one of the three integers values:
+Value 0 - representing an empty cell.
+Value 1 - representing a fresh orange.
+Value 2 - representing a rotten orange.
+Every second, any fresh orange that is adjacent(4-directionally) to a rotten orange becomes rotten.
+Your task is to find out the minimum time after which no cell has a fresh orange. If it's impossible to rot all the fresh oranges then print -1.
+Note:
+1. The grid has 0-based indexing.
+2. A rotten orange can affect the adjacent oranges 4 directionally i.e. Up, Down, Left, Right.
+
+Link:-https://www.codingninjas.com/studio/problems/rotting-oranges_701655?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+Code:-
+//Use BFS traversal
+#include <queue>
+int minTimeToRot(vector<vector<int>> &grid, int n, int m)
+{
+    vector<vector<int>> visited(n, vector<int>(m, 0)); // O(n*m)
+    queue<pair<int, int>> q;
+    int fresh_orange = 0;
+    for (int i = 0; i < n; i++) // O(n*m)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (grid[i][j] == 1) // count fresh oranges
+                fresh_orange++;
+            else if (grid[i][j] == 2) // insert rotten oranges into queue
+            {
+                visited[i][j] = 1;
+                q.push({i, j});
+            }
+        }
+    }
+    int del_row[] = {-1, 1, 0, 0};
+    int del_col[] = {0, 0, -1, 1};
+    int time = -1;
+    while (!q.empty()) // O(4*n*m)
+    {
+        int sz = q.size();
+        while (sz--)
+        {
+            int row = q.front().first;
+            int col = q.front().second;
+            q.pop();
+            for (int i = 0; i < 4; i++)
+            {
+                int newRow = row + del_row[i];
+                int newCol = col + del_col[i];
+                if (newRow >= 0 && newRow < n && newCol >= 0 && newCol < m && grid[newRow][newCol] == 1 && visited[newRow][newCol] == 0)
+                {
+                    visited[newRow][newCol] = 1;
+                    fresh_orange--;
+                    q.push({newRow, newCol});
+                }
+            }
+        }
+        time++;
+    }
+    if (fresh_orange == 0) // check all fresh oranges rotten or not
+        return max(time, 0);
+    return -1;
+}
+T.C = O(n*m)
+S.C = O(n*m)
