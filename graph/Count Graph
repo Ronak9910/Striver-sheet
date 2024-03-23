@@ -1,0 +1,18 @@
+Question:- Return the number of undirected graphs that can be formed using 'N' vertices, allowing for disconnected components within the graph. Self-edges and multiple edges are not allowed.
+Link:- https://www.codingninjas.com/studio/problems/counting-graphs_8357237?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+code:-
+int countingGraphs(int N)
+{
+    // Maximum number of edges of undirected graph
+    int maximumEdges = (N * (N - 1)) / 2;
+
+    // The total number of graphs containing 0 edge and N vertices will be XC0
+    // The total number of graphs containing 1 edge and N vertices will be XC1
+    // And so on from a number of edges 1 to X with N vertices
+    // Hence, the total number of graphs that can be formed with n vertices will be:
+    // XC0 + XC1 + XC2 + … + XCX = 2^X.
+    int numberOfGraph = (1 << maximumEdges);
+    return numberOfGraph;
+}
+T.C = O(N*(N - 1) / 2)
+S.C = O(1)
