@@ -1,0 +1,44 @@
+Question:- You have been given a binary matrix 'MAT' containing only 0’s and 1’s of size N x M. You need to find the distance of the nearest cell having 1 in the matrix for each cell.
+The distance is calculated as |i1 – i2| + |j1 – j2|, where i1, j1 are the coordinates of the current cell and i2, j2 are the coordinates of the nearest cell having value 1.
+Note : You can only move in four directions which are : Up, Down, Left and Right.
+
+Link:- https://www.codingninjas.com/studio/problems/distance-of-nearest-cell-having-1-in-a-binary-matrix_1169913?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+Code:-
+vector<vector<int>> nearest(vector<vector<int>> &mat, int n, int m)
+{
+    //Using BFS traversal
+    vector<vector<int>> distance(n, vector<int>(m, 0)); // O(n*m)
+    queue<pair<int, pair<int, int>>> q; // O(n*m)
+    for (int i = 0; i < n; i++)// O(n*m)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (mat[i][j] == 1)
+            {
+                q.push({1, {i, j}});
+            }
+        }
+    }
+    int del_row[] = {-1, 1, 0, 0};
+    int del_col[] = {0, 0, -1, 1};
+    while (!q.empty()) // O(n*m)
+    {
+        int dist = q.front().first;
+        int row = q.front().second.first;
+        int col = q.front().second.second;
+        q.pop();
+        for (int i = 0; i < 4; i++)
+        {
+            int newRow = row + del_row[i];
+            int newCol = col + del_col[i];
+            if (newRow >= 0 && newRow < n && newCol >= 0 && newCol < m && mat[newRow][newCol] == 0 && distance[newRow][newCol] == 0)
+            {
+                distance[newRow][newCol] = dist;
+                q.push({dist + 1, {newRow, newCol}});
+            }
+        }
+    }
+    return distance;
+}
+T.C = O(n*m)
+S.C = O(n*m)
