@@ -1,0 +1,68 @@
+Question:- Given a 2D array grid G of 'O's and 'X's. The task is to replace all 'O' with 'X' contained in each island. 
+Where, an island is a set of 'O's connected horizontally or vertically and surrounded by 'X' from all of it's boundaries. (Boundary means top, bottom, left and right)
+
+Link:- https://www.codingninjas.com/studio/problems/replace-%E2%80%98o%E2%80%99-with-%E2%80%98x%E2%80%99_630517?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+Code:-
+#include <queue>
+void replaceOWithX(char **arr, int n, int m)
+{
+    // Using BFS traversal
+    // O's which are connected with boundary can not form into X, except all O can be converted into X
+    queue<pair<int, int>> q;    // O(n*m)
+    for (int i = 0; i < n; i++) // O(n)
+    {
+        if (arr[i][0] == 'O')
+        {
+            q.push({i, 0});
+            arr[i][0] = '.';
+        }
+        if (arr[i][m - 1] == 'O')
+        {
+            q.push({i, m - 1});
+            arr[i][m - 1] = '.';
+        }
+    }
+    for (int i = 0; i < m; i++) // O(m)
+    {
+        if (arr[0][i] == 'O')
+        {
+            q.push({0, i});
+            arr[0][i] = '.';
+        }
+        if (arr[n - 1][i] == 'O')
+        {
+            q.push({n - 1, i});
+            arr[n - 1][i] = '.';
+        }
+    }
+    int del_row[] = {-1, 1, 0, 0};
+    int del_col[] = {0, 0, 1, -1};
+    while (!q.empty()) // O(n*m)
+    {
+        int row = q.front().first;
+        int col = q.front().second;
+        q.pop();
+        for (int i = 0; i < 4; i++)
+        {
+            int newRow = row + del_row[i];
+            int newCol = col + del_col[i];
+            if (newRow >= 0 && newRow < n && newCol >= 0 && newCol < m && arr[newRow][newCol] == 'O')
+            {
+                arr[newRow][newCol] = '.';
+                q.push({newRow, newCol});
+            }
+        }
+    }
+    for (int i = 0; i < n; i++) // O(n*m)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (arr[i][j] == 'O')
+                arr[i][j] = 'X';
+            else if (arr[i][j] == '.')
+                arr[i][j] = 'O';
+        }
+    }
+}
+T.C = O(n*m)
+S.C = O(n*m)
