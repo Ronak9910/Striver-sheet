@@ -1,0 +1,203 @@
+Question:- You are given ‘n’ cities, some of which are connected by bidirectional roads. You are also given an ‘n x n’ matrix i.e. ‘roads’, where if city ‘i’ and ‘j’ are connected by a road then ‘roads[i][j]'= 1, otherwise ‘roads[i][j]' = 0.
+A province is a group of cities that are either directly or indirectly connected to each other through roads.
+The goal is to count and return the total number of such provinces in the given matrix.
+
+Link:- https://www.codingninjas.com/studio/problems/find-the-number-of-states_1377943?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+Code:-
+Approach 1 using BFS:-
+
+void bfs(vector<int> adj[], vector<int> &visited, int startNode)
+{
+    // For bfs traversal queue is required.
+    queue<int> q;
+    // Enter starting point of traversal and mark it visited
+    q.push(startNode);
+    visited[startNode] = 1;
+    while (!q.empty())
+    {
+        int node = q.front();
+        q.pop();
+        for (auto it : adj[node])
+        {
+            if (visited[it] == 0)
+            {
+                visited[it] = 1;
+                q.push(it);
+            }
+        }
+    }
+}
+int findNumOfProvinces(vector<vector<int>> &roads, int V)
+{
+    // Create a adjacency list for graph
+    vector<int> adj[V]; // O(V + 2 * E) , V->vertices, E->edges
+    // Connecting node to itself
+    for (int i = 0; i < V; i++) // O(V)
+    {
+        adj[i].push_back(i);
+    }
+    for (int i = 0; i < V; i++) // O(V*V)
+    {
+        for (int j = 0; j < V; j++)
+        {
+            if (roads[i][j] == 1)
+            {
+                adj[i].push_back(j);
+            }
+        }
+    }
+    // Using BFS for finding number of Provinces
+    vector<int> visited(V, 0); // O(V)
+    // Maintain a visited array for checking which index works is already done
+    int numberOfProvinces = 0;
+    for (int i = 0; i < V; i++) // O(V + 2*E)
+    {
+        if (visited[i] == 0)
+        {
+            numberOfProvinces++;
+            bfs(adj, visited, i);
+        }
+    }
+    return numberOfProvinces;
+}
+T.C = O(V*V)
+S.C = O(2*V + 2*E)
+
+Approach 2 using DFS:-
+
+void dfs(vector<int> adj[], vector<int> &visited, int node)
+{
+    visited[node] = 1;
+    for(auto it : adj[node])
+    {
+        if(visited[it] == 0)
+        {
+            dfs(adj, visited, it);
+        }
+    }
+}
+int findNumOfProvinces(vector<vector<int>>& roads, int V) {
+    //Create a adjacency list for graph
+    vector<int> adj[V]; // O(V + 2 * E) , V->vertices, E->edges
+    //Connecting node to itself
+    for(int i = 0; i < V; i++) // O(V)
+    {
+        adj[i].push_back(i);
+    }
+    for(int i = 0; i < V; i++) //O(V*V)
+    {
+        for(int j = 0; j < V; j++)
+        {
+            if(roads[i][j] == 1)
+            {
+                adj[i].push_back(j);
+            }
+        }
+    }
+    //Using DFS for finding number of Provinces
+    vector<int> visited(V, 0); // O(V)
+    //Maintain a visited array for checking which index works is already done
+    int numberOfProvinces = 0;
+    for(int i = 0; i < V; i++) // O(V + 2*E)
+    {
+        if(visited[i] == 0)
+        {
+            numberOfProvinces++;
+            dfs(adj, visited, i);
+        }
+    }
+    return numberOfProvinces;
+}
+T.C = O(V*V)
+S.C = O(2*V + 2*E)
+
+Approach 3 using Disjoint Set:-
+
+class DisjointSet
+{
+
+    vector<int> parent, size;
+
+public:
+    DisjointSet(int n)
+    {
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++)
+        {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node)
+    {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v)
+            return;
+        if (size[ulp_u] < size[ulp_v])
+        {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else
+        {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+int findNumOfProvinces(vector<vector<int>> &roads, int V)
+{
+    // Create a adjacency list for graph
+    vector<int> adj[V]; // O(V + 2 * E) , V->vertices, E->edges
+    // Connecting node to itself
+    for (int i = 0; i < V; i++) // O(V)
+    {
+        adj[i].push_back(i);
+    }
+    for (int i = 0; i < V; i++) // O(V*V)
+    {
+        for (int j = 0; j < V; j++)
+        {
+            if (roads[i][j] == 1)
+            {
+                adj[i].push_back(j);
+            }
+        }
+    }
+    // Using Disjoint Set for finding number of Provinces
+    vector<int> visited(V, 0); // O(V)
+    DisjointSet ds(V);
+    // Maintain a visited array for checking which index works is already done
+    //C -> constant, C = 4*alpha
+    for (int i = 0; i < V; i++) // O(V*C)
+    {
+        if (visited[i] == 0)
+        {
+            for (auto it : adj[i])
+            {
+                if (it != i)
+                {
+                    ds.unionBySize(i, it);
+                }
+            }
+        }
+    }
+    int numberOfProvinces = 0;
+    for (int i = 0; i < V; i++)
+    {
+        if (i == ds.findUPar(i))
+            numberOfProvinces++;
+    }
+    return numberOfProvinces;
+}
+T.C = O(V*V)
+S.C = O(4*V + 2*E)
