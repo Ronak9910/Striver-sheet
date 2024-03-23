@@ -1,0 +1,71 @@
+Question:- You have been given a number of stairs. Initially, you are at the 0th stair, and you need to reach the Nth stair.
+Each time, you can climb either one step or two steps.
+You are supposed to return the number of distinct ways you can climb from the 0th step to the Nth step.
+
+Link:- https://www.codingninjas.com/studio/problems/count-ways-to-reach-nth-stairs_798650?source=youtube&campaign=striver_dp_videos&leftPanelTabValue=PROBLEM
+
+Constraints:- 0 <= 'N' <= 10^5
+Code:-
+Approach 1 Brute Force:-
+#include <bits/stdc++.h>
+int countDistinctWays(int nStairs)
+{
+    if (nStairs < 0)
+        return 0;
+    if (nStairs == 0)
+        return 1;
+    return countDistinctWays(nStairs - 1) + countDistinctWays(nStairs - 2);
+}
+//N = nStairs
+T.C = O(2^N)
+S.C = O(N)
+
+Approach 2 Memoization:-
+#include <bits/stdc++.h>
+int getCountDistinctWays(int n, vector<int> &dp)
+{
+    if (n < 0)
+        return 0;
+    if (n == 0)
+        return 1;
+    if (dp[n] != -1)
+        return dp[n];
+    return dp[n] = (getCountDistinctWays(n - 1, dp) + getCountDistinctWays(n - 2, dp)) % 1000000007;
+}
+int countDistinctWays(int nStairs)
+{
+    vector<int> dp(nStairs + 1, -1);
+    return getCountDistinctWays(nStairs, dp);
+}
+T.C = O(N)
+S.C = O(N)
+
+Approach 3 Tabulation:-
+#include <bits/stdc++.h>
+int countDistinctWays(int nStairs)
+{
+    vector<int> dp(nStairs + 1, 0);
+    dp[0] = 1;
+    dp[1] = 1;
+    for (int i = 2; i <= nStairs; i++)
+        dp[i] = (dp[i - 1] + dp[i - 2]) % 1000000007;
+    return dp[nStairs];
+}
+T.C = O(N)
+S.C = O(N)
+
+Approach 4 Space Optimization:-
+#include <bits/stdc++.h>
+int countDistinctWays(int nStairs)
+{
+    int prev1 = 1, prev2 = 1;
+    for (int i = 2; i <= nStairs; i++)
+    {
+        int temp = (prev1 + prev2) % 1000000007;
+        prev2 = prev1;
+        prev1 = temp;
+    }
+    return prev1;
+}
+T.C = O(N)
+S.C = O(1)
