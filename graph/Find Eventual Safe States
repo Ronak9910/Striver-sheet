@@ -1,0 +1,51 @@
+Question:- Ninja has been given a matrix/list 'EDGES' denoting 'E' edges of a directed graph having ‘N’ nodes.
+Ninja starts walking from some node (say ‘START’) in the graph along a directed edge of the graph. 
+If Ninja reaches an end node (say ‘END’) (a node that has no outgoing directed edges), Ninja stops walking.
+Now a starting node ‘START’ is a safe node only if Ninja must eventually walk to an end node ‘END’. 
+More specifically, there must be a natural number ‘K’, so that Ninja must have stopped at an end node in less than ‘K’ steps for any choice of where to walk.
+
+Link:- https://www.naukri.com/code360/problems/safe-nodes-in-the-graph_1376703?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+Approach:- Detect which nodes lie in cycle. Except cycle nodes will be in the answer.
+
+Code:-
+Using DFS
+
+#include <bits/stdc++.h>
+bool dfs(vector<int> adj[], int node, vector<int> &path)
+{
+    path[node] = 2;
+    for (auto it : adj[node])
+    {
+        if (path[it] == 2)
+            return true;
+        if (path[it] == 0)
+        {
+            if (dfs(adj, it, path))
+                return true;
+        }
+    }
+    path[node] = 1;
+    return false;
+}
+vector<int> safeNodes(vector<vector<int>> &edges, int v, int e)
+{
+    vector<int> adj[v];
+    for (int i = 0; i < e; i++)
+        adj[edges[i][0]].push_back(edges[i][1]);
+    vector<int> path(v, 0);
+    for (int i = 0; i < v; i++)
+    {
+        if (path[i] == 0)
+        {
+            bool l = dfs(adj, i, path);
+        }
+    }
+    vector<int> ans;
+    for (int i = 0; i < v; i++)
+        if (path[i] == 1)
+            ans.push_back(i);
+    return ans;
+}
+T.C = O(2*V + 2*E)
+S.C = O(2*V + E)
