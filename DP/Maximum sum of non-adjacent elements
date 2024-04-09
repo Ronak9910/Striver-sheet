@@ -1,0 +1,64 @@
+Question:- You are given an array/list of ‘N’ integers. You are supposed to return the maximum sum of the subsequence with the constraint that no two elements are adjacent in the given array/list.
+
+Link:- https://www.naukri.com/code360/problems/maximum-sum-of-non-adjacent-elements_843261?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf&leftPanelTabValue=PROBLEM
+
+Code:-
+Approach 1 Memoization:-
+#include <bits/stdc++.h>
+int solve(vector<int> &nums, int ind, vector<int> &dp)
+{
+    if (ind < 0)
+        return 0;
+    if (dp[ind] != -1)
+        return dp[ind];
+    int take = nums[ind] + solve(nums, ind - 2, dp);
+    int not_take = solve(nums, ind - 1, dp);
+    return dp[ind] = max(take, not_take);
+}
+int maximumNonAdjacentSum(vector<int> &nums)
+{
+    int n = nums.size();
+    vector<int> dp(n, -1);
+    return solve(nums, n - 1, dp);
+}
+T.C = O(N)
+S.C = O(N)
+
+Approach 2 Tabulation:-
+#include <bits/stdc++.h>
+int maximumNonAdjacentSum(vector<int> &nums)
+{
+    int n = nums.size();
+    vector<int> dp(n, -1);
+    dp[0] = nums[0];
+    for (int i = 1; i < n; i++)
+    {
+        int take = nums[i];
+        if (i > 1)
+            take = nums[i] + dp[i - 2];
+        int not_take = dp[i - 1];
+        dp[i] = max(take, not_take);
+    }
+    return dp[n - 1];
+}
+T.C = O(N)
+S.C = O(N)
+
+Approach 3 Space optimization:-
+#include <bits/stdc++.h>
+int maximumNonAdjacentSum(vector<int> &nums)
+{
+    int n = nums.size();
+    int prev1 = nums[0], prev2 = 0;
+    for (int i = 1; i < n; i++)
+    {
+        int take = nums[i] + prev2;
+        int not_take = prev1;
+        int temp = max(take, not_take);
+        prev2 = prev1;
+        prev1 = temp;
+    }
+    return prev1;
+}
+T.C = O(N)
+S.C = O(1)
